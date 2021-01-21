@@ -17,8 +17,8 @@ const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 640;
 const int SCREEN_BPP = 32; //screen pixel
 
-const int COLOR_KEY_G = 167;
-const int COLOR_KEY_R = 175;
+const int COLOR_KEY_R = 167;
+const int COLOR_KEY_G = 175;
 const int COLOR_KEY_B = 180;
 
 const int RENDER_DRAW_COLOR = 0XFF;
@@ -32,5 +32,12 @@ typedef struct Map
 	int max_x_, max_y_;
 	int tile[MAX_MAP_Y][MAX_MAP_X];
 	std::string file_name_;
+};
+
+typedef struct Action
+{
+	int left_, right_;
+	int up_, down_;
+	int jump_;
 };
 #endif

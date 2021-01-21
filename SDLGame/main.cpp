@@ -5,7 +5,10 @@
 #include "CommonFunc.h"
 #include "BaseObject.h"
 #include "GameMap.h"
+#include "MainCharacter.h"
+
 BaseObject g_background;
+
 bool InitData() 
 {
 	bool success = true;
@@ -59,6 +62,10 @@ int main(int argc, char *argv[])
 	game_map.LoadMap("map/map01.dat");
 	game_map.LoadTiles(g_screen);
 
+	MainCharacter main_p;
+	main_p.LoadIMG("img/player_right.png", g_screen);
+	main_p.set_clips();
+
 	bool is_quit = false;
 
 	while (!is_quit)
@@ -69,6 +76,8 @@ int main(int argc, char *argv[])
 			{
 				is_quit = true;
 			}
+
+			main_p.HandleActionInput(g_event, g_screen);
 		}
 
 		SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
@@ -76,6 +85,7 @@ int main(int argc, char *argv[])
 
 		g_background.Render(g_screen);
 		game_map.DrawMap(g_screen);
+		main_p.Show(g_screen);
 
 		SDL_RenderPresent(g_screen);
 	}
