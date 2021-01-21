@@ -4,6 +4,7 @@
 #include <iostream>
 #include "CommonFunc.h"
 #include "BaseObject.h"
+#include "GameMap.h"
 BaseObject g_background;
 bool InitData() 
 {
@@ -53,6 +54,11 @@ int main(int argc, char *argv[])
     std::cout << "Hello World!\n";
 	if (!InitData() || !LoadBackGround())
 		return -1;
+
+	GameMap game_map;
+	game_map.LoadMap("map/map01.dat");
+	game_map.LoadTiles(g_screen);
+
 	bool is_quit = false;
 
 	while (!is_quit)
@@ -67,7 +73,10 @@ int main(int argc, char *argv[])
 
 		SDL_SetRenderDrawColor(g_screen, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR, RENDER_DRAW_COLOR);
 		SDL_RenderClear(g_screen);
+
 		g_background.Render(g_screen);
+		game_map.DrawMap(g_screen);
+
 		SDL_RenderPresent(g_screen);
 	}
 	Close();
