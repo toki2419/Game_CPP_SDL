@@ -3,6 +3,11 @@
 #define MAIN_CHARACTER_H_
 #include "CommonFunc.h"
 #include "BaseObject.h"
+
+#define GRAVITY_SPEED 0.8
+#define MAX_FALL_SPEED 10
+#define PLAYER_SPEED 8;
+
 class MainCharacter : public BaseObject
 {
 public:
@@ -17,6 +22,8 @@ public:
 	void set_clips();
 	void Show(SDL_Renderer* des);
 	void HandleActionInput(SDL_Event events, SDL_Renderer* screen);
+	void PlayerAction(Map& map_data);
+	void CheckColision(Map& map_data);
 private:
 	float x_val_, y_val_;
 	float x_pos_, y_pos_;
@@ -26,6 +33,7 @@ private:
 	Action action_input_;
 	int frame_index_;
 	int action_status_;
+	bool on_ground = false;
 };
 
 

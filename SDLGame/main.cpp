@@ -85,6 +85,9 @@ int main(int argc, char *argv[])
 
 		g_background.Render(g_screen);
 		game_map.DrawMap(g_screen);
+
+		Map _map = game_map.getMap();
+		main_p.PlayerAction(_map);
 		main_p.Show(g_screen);
 
 		SDL_RenderPresent(g_screen);
