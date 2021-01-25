@@ -24,6 +24,8 @@ public:
 	void HandleActionInput(SDL_Event events, SDL_Renderer* screen);
 	void PlayerAction(Map& map_data);
 	void CheckColision(Map& map_data);
+	void SetMapXY(const int map_x_, const int map_y_) { map_x = map_x_, map_y = map_y_; };
+	void CenterEntityToMap(Map& map_data);
 private:
 	float x_val_, y_val_;
 	float x_pos_, y_pos_;
@@ -34,6 +36,7 @@ private:
 	int frame_index_;
 	int action_status_;
 	bool on_ground = false;
+	int map_x, map_y;
 };
 
 

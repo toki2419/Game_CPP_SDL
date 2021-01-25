@@ -8,6 +8,7 @@ MainCharacter::MainCharacter()
 	frame_index_ = 0;
 	action_status_ = 0;
 	action_input_.down_ = action_input_.up_ = action_input_.left_ = action_input_.right_ = action_input_.jump_ = 0;
+	map_x = map_y = 0;
 }
 
 MainCharacter::~MainCharacter()
@@ -54,8 +55,8 @@ void MainCharacter::Show(SDL_Renderer * des)
 	if (frame_index_ > 7)
 		frame_index_ = 0;
 
-	rect_.x = x_pos_;
-	rect_.y = y_pos_;
+	rect_.x = x_pos_ - map_x;
+	rect_.y = y_pos_ - map_y;
 
 	SDL_Rect* current_clip = &frame_clip_[frame_index_];
 	SDL_Rect renderQuad = { rect_.x, rect_.y, frame_width_, frame_height_ };
@@ -116,6 +117,7 @@ void MainCharacter::PlayerAction(Map & map_data)
 		x_val_ -= PLAYER_SPEED;
 	}
 	CheckColision(map_data);
+	CenterEntityToMap(map_data);
 }
 
 void MainCharacter::CheckColision(Map & map_data)
@@ -188,4 +190,27 @@ void MainCharacter::CheckColision(Map & map_data)
 		x_pos_ = 0;
 	else if (x_pos_ + frame_width_ > map_data.max_x_)
 		x_pos_ = map_data.max_x_ - frame_width_ - 1;
+}
+
+void MainCharacter::CenterEntityToMap(Map & map_data)
+{
+	map_data.start_x_ = x_pos_ - SCREEN_WIDTH / 2;
+	if (map_data.start_x_ < 0)
+	{
+		map_data.start_x_ = 0;
+	}
+	else if (map_data.start_x_ + SCREEN_WIDTH >= map_data.max_x_)
+	{
+		map_data.start_x_ = map_data.max_x_ - SCREEN_WIDTH;
+	}
+
+	map_data.start_y_ = y_pos_ - SCREEN_HEIGHT / 2;
+	if (map_data.start_y_ < 0)
+	{
+		map_data.start_y_ = 0;
+	}
+	else if (map_data.start_y_ + SCREEN_HEIGHT >= map_data.max_y_)
+	{
+		map_data.start_y_ = map_data.max_y_ - SCREEN_HEIGHT;
+	}
 }

@@ -33,12 +33,12 @@ typedef struct Map
 	int max_x_, max_y_;
 	int tile[MAX_MAP_Y][MAX_MAP_X];
 	std::string file_name_;
-};
+} Map;
 
 typedef struct Action
 {
 	int left_, right_;
 	int up_, down_;
 	int jump_;
-};
+} Action;
 #endif
