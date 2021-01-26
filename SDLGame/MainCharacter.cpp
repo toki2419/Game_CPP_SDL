@@ -42,10 +42,14 @@ void MainCharacter::set_clips()
 
 void MainCharacter::Show(SDL_Renderer * des)
 {
-	if (action_status_ == GO_RIGHT)
-		LoadIMG("img/player_right.png", des);
-	else
-		LoadIMG("img/player_left.png", des);
+	if(on_ground)
+	{
+		if (action_status_ == GO_RIGHT)
+			LoadIMG("img/player_right.png", des);
+		else
+			LoadIMG("img/player_left.png", des);
+	}
+	
 
 	if (action_input_.left_ == 1 || action_input_.right_ == 1)
 		frame_index_++;
@@ -74,6 +78,12 @@ void MainCharacter::HandleActionInput(SDL_Event events, SDL_Renderer * screen)
 			action_status_ = GO_LEFT;
 			action_input_.left_ = 1;
 			action_input_.right_ = 0;
+
+			if (on_ground)
+				LoadIMG("img/player_left.png", screen);
+			else
+				LoadIMG("img/jum_left.png", screen);
+				
 		}
 		break;
 		case SDLK_RIGHT:
@@ -81,6 +91,17 @@ void MainCharacter::HandleActionInput(SDL_Event events, SDL_Renderer * screen)
 			action_status_ = GO_RIGHT;
 			action_input_.right_ = 1;
 			action_input_.left_ = 0;
+
+			if (on_ground)
+				LoadIMG("img/player_right.png", screen);
+			else
+				LoadIMG("img/jum_right.png", screen);
+				
+		}
+		break;
+		case SDLK_SPACE:
+		{
+			action_input_.jump_ = 1;
 		}
 		break;
 		}
@@ -95,6 +116,9 @@ void MainCharacter::HandleActionInput(SDL_Event events, SDL_Renderer * screen)
 			break;
 		case SDLK_RIGHT:
 			action_input_.right_ = 0;
+			break;
+		case SDLK_SPACE:
+			action_input_.jump_ = 0;
 			break;
 		}
 	}
@@ -112,9 +136,15 @@ void MainCharacter::PlayerAction(Map & map_data)
 	{
 		x_val_ += PLAYER_SPEED;
 	}
-	else if (action_input_.left_ == 1)
+	if (action_input_.left_ == 1)
 	{
 		x_val_ -= PLAYER_SPEED;
+	}
+	if (action_input_.jump_ == 1)
+	{
+		if(on_ground)
+			y_val_ = - 15;
+		action_input_.jump_ = 0;
 	}
 	CheckColision(map_data);
 	CenterEntityToMap(map_data);
