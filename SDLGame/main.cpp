@@ -6,6 +6,7 @@
 #include "BaseObject.h"
 #include "GameMap.h"
 #include "MainCharacter.h"
+#include "ImpTimer.h"
 
 BaseObject g_background;
 
@@ -54,10 +55,11 @@ void Close()
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Hello World!\n";
+	std::cout << "Hello World!\n";
 	if (!InitData() || !LoadBackGround())
 		return -1;
 
+	ImpTimer fps_time;
 	GameMap game_map;
 	game_map.LoadMap("map/map01.dat");
 	game_map.LoadTiles(g_screen);
@@ -70,6 +72,7 @@ int main(int argc, char *argv[])
 
 	while (!is_quit)
 	{
+		fps_time.Start();
 		while (SDL_PollEvent(&g_event) != 0)
 		{
 			if (g_event.type == SDL_QUIT)
@@ -96,6 +99,11 @@ int main(int argc, char *argv[])
 		
 
 		SDL_RenderPresent(g_screen);
+
+		int real_time = fps_time.get_ticks();
+		int time_one_frame = 1000 / FPS; //1000ms = 1s
+		if (real_time < time_one_frame)
+			SDL_Delay(time_one_frame - real_time);
 	}
 	Close();
 	return 0;

@@ -117,9 +117,6 @@ void MainCharacter::HandleActionInput(SDL_Event events, SDL_Renderer * screen)
 		case SDLK_RIGHT:
 			action_input_.right_ = 0;
 			break;
-		case SDLK_SPACE:
-			action_input_.jump_ = 0;
-			break;
 		}
 	}
 }
@@ -142,8 +139,11 @@ void MainCharacter::PlayerAction(Map & map_data)
 	}
 	if (action_input_.jump_ == 1)
 	{
-		if(on_ground)
-			y_val_ = - 15;
+		if (on_ground) {
+			y_val_ = -18;
+			on_ground = false;
+		}
+			
 		action_input_.jump_ = 0;
 	}
 	CheckColision(map_data);
