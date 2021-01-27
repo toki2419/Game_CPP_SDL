@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
 		main_p.SetMapXY(map_data.start_x_, map_data.start_y_);
 		main_p.PlayerAction(map_data);
 		main_p.Show(g_screen);
+		main_p.HandleBullet(g_screen);
 
 		game_map.setMap(map_data);
 		game_map.DrawMap(g_screen);

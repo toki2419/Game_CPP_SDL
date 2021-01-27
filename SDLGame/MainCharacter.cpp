@@ -27,6 +27,26 @@ bool MainCharacter::LoadIMG(std::string path, SDL_Renderer * screen)
 	return res;
 }
 
+void MainCharacter::UpdatePlayerIMG(SDL_Renderer * des)
+{
+	std::string p_Img = "";
+	if (on_ground)
+	{
+		if (action_status_ == GO_RIGHT)
+			p_Img = "img/player_right.png";
+		else
+			p_Img = "img/player_left.png";
+	}
+	else
+	{
+		if (action_status_ == GO_RIGHT)
+			p_Img = "img/jum_right.png";
+		else
+			p_Img = "img/jum_left.png";
+	}
+	LoadIMG(p_Img, des);
+}
+
 void MainCharacter::set_clips()
 {
 	if (frame_width_ > 0 && frame_height_ > 0)
@@ -45,15 +65,8 @@ void MainCharacter::Show(SDL_Renderer * des)
 {
 	if (comeback_time_ > 0)
 		return;
-	if(on_ground)
-	{
-		if (action_status_ == GO_RIGHT)
-			LoadIMG("img/player_right.png", des);
-		else
-			LoadIMG("img/player_left.png", des);
-	}
+	UpdatePlayerIMG(des);
 	
-
 	if (action_input_.left_ == 1 || action_input_.right_ == 1)
 		frame_index_++;
 	else
@@ -81,12 +94,6 @@ void MainCharacter::HandleActionInput(SDL_Event events, SDL_Renderer * screen)
 			action_status_ = GO_LEFT;
 			action_input_.left_ = 1;
 			action_input_.right_ = 0;
-
-			if (on_ground)
-				LoadIMG("img/player_left.png", screen);
-			else
-				LoadIMG("img/jum_left.png", screen);
-				
 		}
 		break;
 		case SDLK_RIGHT:
@@ -94,17 +101,31 @@ void MainCharacter::HandleActionInput(SDL_Event events, SDL_Renderer * screen)
 			action_status_ = GO_RIGHT;
 			action_input_.right_ = 1;
 			action_input_.left_ = 0;
-
-			if (on_ground)
-				LoadIMG("img/player_right.png", screen);
-			else
-				LoadIMG("img/jum_right.png", screen);
-				
 		}
 		break;
 		case SDLK_SPACE:
 		{
 			action_input_.jump_ = 1;
+		}
+		break;
+		case SDLK_LALT:
+		{
+			BulletObject* bullet = new BulletObject();
+			bullet->LoadIMG("img/bullet_1.png", screen);
+			bullet->SetRect(this->rect_.x + frame_width_ - 20, this->rect_.y + frame_height_ * 0.3);
+			bullet->Set_X(20);
+			bullet->SetIsMove(true);
+			if (action_status_ == GO_RIGHT)
+			{
+				bullet->SetDirectionBullet(bullet->RIGHT);
+				bullet->SetRect(this->rect_.x + frame_width_ - 20, this->rect_.y + frame_height_ * 0.25);
+			}
+			if (action_status_ == GO_LEFT)
+			{
+				bullet->SetDirectionBullet(bullet->LEFT);
+				bullet->SetRect(this->rect_.x, this->rect_.y + frame_height_ * 0.25);
+			}
+			p_bullet_list_.push_back(bullet);
 		}
 		break;
 		}
@@ -124,6 +145,28 @@ void MainCharacter::HandleActionInput(SDL_Event events, SDL_Renderer * screen)
 	}
 }
 
+void MainCharacter::HandleBullet(SDL_Renderer * screen)
+{
+	for (int i = 0; i < p_bullet_list_.size(); i++) 
+	{
+		BulletObject* bullet = p_bullet_list_[i];
+		if (bullet)
+		{
+			if (bullet->GetStatus())
+			{
+				bullet->HandleMove(SCREEN_WIDTH, SCREEN_HEIGHT);
+				bullet->Render(screen);
+			}
+			else
+			{
+				p_bullet_list_.erase(p_bullet_list_.begin() + i);
+				delete bullet;
+				bullet = NULL;
+			}
+		}
+	}
+}
+
 void MainCharacter::PlayerAction(Map & map_data)
 {
 	if(comeback_time_ > 0)
@@ -137,6 +180,7 @@ void MainCharacter::PlayerAction(Map & map_data)
 			x_pos_ -= 4 * TILE_SIZE;
 			if (x_pos_ < 0)
 				x_pos_ = 0;
+			on_ground = false;
 		}
 		return;
 	}

@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BaseObject.cpp" />
+    <ClCompile Include="BulletObject.cpp" />
     <ClCompile Include="CommonFunc.cpp" />
     <ClCompile Include="GameMap.cpp" />
     <ClCompile Include="ImpTimer.cpp" />
@@ -166,6 +167,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="BulletObject.h" />
     <ClInclude Include="CommonFunc.h" />
     <ClInclude Include="GameMap.h" />
     <ClInclude Include="ImpTimer.h" />
