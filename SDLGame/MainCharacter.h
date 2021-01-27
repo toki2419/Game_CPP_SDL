@@ -37,6 +37,7 @@ private:
 	int action_status_;
 	bool on_ground = false;
 	int map_x, map_y;
+	int comeback_time_;
 };
 
 

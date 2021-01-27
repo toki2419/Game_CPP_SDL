@@ -9,6 +9,7 @@ MainCharacter::MainCharacter()
 	action_status_ = 0;
 	action_input_.down_ = action_input_.up_ = action_input_.left_ = action_input_.right_ = action_input_.jump_ = 0;
 	map_x = map_y = 0;
+	comeback_time_ = 0;
 }
 
 MainCharacter::~MainCharacter()
@@ -42,6 +43,8 @@ void MainCharacter::set_clips()
 
 void MainCharacter::Show(SDL_Renderer * des)
 {
+	if (comeback_time_ > 0)
+		return;
 	if(on_ground)
 	{
 		if (action_status_ == GO_RIGHT)
@@ -123,6 +126,20 @@ void MainCharacter::HandleActionInput(SDL_Event events, SDL_Renderer * screen)
 
 void MainCharacter::PlayerAction(Map & map_data)
 {
+	if(comeback_time_ > 0)
+	{
+		comeback_time_--;
+		if (comeback_time_ == 0)
+		{
+			x_val_ = 0;
+			y_val_ = 0;
+			y_pos_ = 0;
+			x_pos_ -= 4 * TILE_SIZE;
+			if (x_pos_ < 0)
+				x_pos_ = 0;
+		}
+		return;
+	}
 	x_val_ = 0;
 	y_val_ += GRAVITY_SPEED;
 
@@ -141,9 +158,8 @@ void MainCharacter::PlayerAction(Map & map_data)
 	{
 		if (on_ground) {
 			y_val_ = -18;
-			on_ground = false;
 		}
-			
+		on_ground = false;
 		action_input_.jump_ = 0;
 	}
 	CheckColision(map_data);
@@ -220,6 +236,8 @@ void MainCharacter::CheckColision(Map & map_data)
 		x_pos_ = 0;
 	else if (x_pos_ + frame_width_ > map_data.max_x_)
 		x_pos_ = map_data.max_x_ - frame_width_ - 1;
+	if (y_pos_ > map_data.max_y_)
+		comeback_time_ = 60;
 }
 
 void MainCharacter::CenterEntityToMap(Map & map_data)
